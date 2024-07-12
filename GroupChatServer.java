@@ -19,12 +19,12 @@ public class GroupChatServer
 			While(!serverSocket.isClosed())
 			{
 				Socket socket = serverSocket.accept();
-				System.out.println("New Clinet has connected!");
+				System.out.println("New Client has connected!");
 
 				ClientHandler clientHandler = new ClientHandler(socket);
 
 				Thread thread = new Thread(clientHandler);
-				tread.start();
+				thread.start();
 
 			}
 

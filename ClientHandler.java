@@ -1,6 +1,10 @@
-import java.io.IOException;
-import java.util.ArrayList;
 import java.net.Socket;
+
+import java.io.IOException;
+import java.io.BufferReder;
+import java.io.BufferWriter;
+
+import java.util.ArrayList;
 
 
 public class ClientHandler implements Runnable
@@ -21,14 +25,14 @@ public class ClientHandler implements Runnable
 			{
 				this.socket = socket;
 				this.bufferReader = new BufferReader(new InputStreamReader(socket.getInputStream()));
-				this.bufferWritter = new BufferWritter(new OutputStreamWritter(socket.getOutPutStream()));
+				this.bufferWriter = new BufferWriter(new OutputStreamWriter(socket.getOutPutStream()));
 				this.clientUsername = bufferReader.readLine();
 				clientHandler.add(this);
 				broadcastMessage("Server: " + clientUsername + " has enter the chat!");
 			}
 		catch(IOExcpetion e)
 			{
-				closeEverything(this.socket, this.bufferReader, this.bufferWritter);
+				closeEverything(this.socket, this.bufferReader, this.bufferWriter);
 			}
 	}
 
@@ -51,7 +55,7 @@ public class ClientHandler implements Runnable
 				}
 			catch(IOException e)
 				{
-					closeEverything(socket, bufferReader, bufferWritter);
+					closeEverything(socket, bufferReader, bufferWriter);
 					break;	
 				}
 		}
@@ -66,14 +70,14 @@ public class ClientHandler implements Runnable
 				{
 					if(!clientHandler.clientUsername.equals(clientUsername))
 					{
-						clientHandler.bufferWritter.write(message);
-						clientHandler.bufferWritter.newLine();
-						clientHandler.bufferWritter.flush();
+						clientHandler.bufferWriter.write(message);
+						clientHandler.bufferWriter.newLine();
+						clientHandler.bufferWriter.flush();
 					}
 				}
 			catch(IOException e)
 				{
-					closeEverything(socket, bufferReader, bufferWritter);
+					closeEverything(socket, bufferReader, bufferWriter);
 				}
 		}	
 	}
@@ -84,7 +88,7 @@ public class ClientHandler implements Runnable
 		broadcastMessage("Server: " + clientUsername + " has left the chat!");
 	}
 
-	public void closeEverything(Socket socket, BufferReader bufferReader, BufferWriter bufferWritter)
+	public void closeEverything(Socket socket, BufferReader bufferReader, BufferWriter bufferWriter)
 	{
 		removeCLientHandler();
 		try
@@ -97,9 +101,9 @@ public class ClientHandler implements Runnable
 				{
 					bufferReader.close();
 				}
-				if(bufferWritter != null)
+				if(bufferWriter != null)
 				{
-					bufferWritter.close(); 
+					bufferWriter.close(); 
 				}
 				
 			}
